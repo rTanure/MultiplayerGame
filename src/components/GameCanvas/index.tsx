@@ -15,13 +15,16 @@ import getMouseCoord from '../../scripts/control/getMouseCoord'
 import getTouchCoord from '../../scripts/control/getTouchCoord'
 import checkEvent from '../../scripts/control/checkEvent'
 
-import drawLineStart from '../../scripts/draw/drawLineStart'
-import drawLineMiddle from '../../scripts/draw/drawLineMiddle'
-import drawLineFinish from '../../scripts/draw/drawLineFinish'
+import { drawLine } from '../../scripts/draw/drawLine'
+import { drawCanvas } from '../../scripts/draw/drawCanvas'
 
 import appendVolatileData from '../../scripts/data/appendVolatileData'
 import resetVolatileData from '../../scripts/data/resetVolatileData'
 import saveDrawingData from '../../scripts/data/saveDrawingData'
+
+import { api } from '../../api/functions'
+import VolatileData from '../../data/VolatileData'
+import drawingData from '../../data/drawingData'
 
 export default function GameCanvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -44,6 +47,9 @@ export default function GameCanvas() {
         configureCanvas(canvas) 
         configureContext(ctx)
 
+        canvasSettings.setContext(contextRef)
+
+        api.getData(drawCanvas.initial)
     }, [
         // window.innerHeight, 
         // window.innerWidth
@@ -62,7 +68,7 @@ export default function GameCanvas() {
 
         if(!eventCoord) {return}
 
-        drawLineStart(eventCoord.x, eventCoord.y, contextRef, canvasSettings.get().lineColor)
+        drawLine.start(eventCoord.x, eventCoord.y, contextRef, canvasSettings.get().lineColor)
         setIsDrawing(true)
     }
 
@@ -83,17 +89,21 @@ export default function GameCanvas() {
 
             if(!eventCoord) {return}
 
-        drawLineMiddle(eventCoord.x, eventCoord.y, contextRef)
+        drawLine.middle(eventCoord.x, eventCoord.y, contextRef)
         appendVolatileData(eventCoord. x, eventCoord.y)
     }
 
     const finishDrawing = () => {
         setIsDrawing(false)
 
-        drawLineFinish(contextRef)
+        drawLine.finish(contextRef)
 
         saveDrawingData()
+
+        api.appendDrawToServer(VolatileData.get(), canvasSettings.get().lineColor)
+
         resetVolatileData()
+        
     }
 
     return (
@@ -106,7 +116,7 @@ export default function GameCanvas() {
             onTouchMove={draw}
             onTouchEnd={finishDrawing}
             
-            onMouseLeave={finishDrawing}
+            // onMouseLeave={finishDrawing}
 
             ref={canvasRef}
         />

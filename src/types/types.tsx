@@ -33,7 +33,8 @@ type CanvasSettings = {
     scale: Coord
     lineColor: string
     lineWidth: number,
-    backgroundColor: string
+    backgroundColor: string,
+    context: React.MutableRefObject<CanvasRenderingContext2D | null> | undefined
 }
 
 export type {

@@ -12,7 +12,8 @@ let canvasSettings: CanvasSettings = {
     },
     "lineColor": "#ffffff",
     "lineWidth": 15,
-    "backgroundColor": "#d4d4d4"
+    "backgroundColor": "#d4d4d4",
+    "context": undefined
 }
 
 function setColor(color: string) {
@@ -29,8 +30,12 @@ function setRealSize(x:number, y:number) {
     canvasSettings.realSize.y = y
 }
 
+function setContext(newContext: React.MutableRefObject<CanvasRenderingContext2D | null>) {
+    canvasSettings.context = newContext
+}
+
 function get() {
     return canvasSettings
 }
 
-export default {get, setRealSize, setScale, setColor}
+export default {get, setRealSize, setScale, setColor, setContext}
