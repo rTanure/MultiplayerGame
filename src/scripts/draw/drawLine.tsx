@@ -1,20 +1,19 @@
 import canvasSettings from "../../data/canvasSettings"
 
 class DrawLine{
-
     public full(data: any) {
-        console.log(data)
-        let coords = data.data.coords
-        let color = data.data.color
+        let { coords, color } = data.data
+
         const context = canvasSettings.get().context
-        if(!context) {
-            return
-        }
-        this.start(coords[0].x,coords[0].y,context, color)
+        if(!context) { return }
+
+        this.start(coords[0].x , coords[0].y , context , color)
+
         for(let c = 0; c < coords.length - 1; c++) {
-            this.middle(coords[c].x, coords[c].y, context)
+            context.current?.lineTo(coords[c].x, coords[c].y)
         }
-        this.finish(context)
+        context.current?.stroke()
+        context.current?.closePath()
         
     }
 
@@ -33,9 +32,7 @@ class DrawLine{
 
     public finish(contextRef: React.MutableRefObject<CanvasRenderingContext2D | null>) {
         contextRef.current?.closePath()
-    }
-    
-    
+    }  
 }
 
 export const drawLine = new DrawLine()

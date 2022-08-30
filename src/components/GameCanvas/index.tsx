@@ -20,17 +20,23 @@ import { drawCanvas } from '../../scripts/draw/drawCanvas'
 
 import appendVolatileData from '../../scripts/data/appendVolatileData'
 import resetVolatileData from '../../scripts/data/resetVolatileData'
-import saveDrawingData from '../../scripts/data/saveDrawingData'
 
 import { api } from '../../api/functions'
 import VolatileData from '../../data/VolatileData'
-import drawingData from '../../data/drawingData'
 
 export default function GameCanvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const contextRef = useRef<CanvasRenderingContext2D | null>(null)
 
     const [isDrawing, setIsDrawing] = useState<boolean>(false)
+
+    useEffect(()=>{
+        canvasSettings.setIsDrawing(isDrawing)
+    }, [isDrawing])
+
+    canvasSettings
+
+    
 
     useEffect(()=>{
         // get Canvas
@@ -50,13 +56,16 @@ export default function GameCanvas() {
         canvasSettings.setContext(contextRef)
 
         api.getData(drawCanvas.initial)
+        
     }, [
-        // window.innerHeight, 
-        // window.innerWidth
+        window.innerHeight, 
+        window.innerWidth
     ])
 
     const startDrawing = (evt: Event) => { 
         const eventData: EventData = evt.nativeEvent
+
+        api.checkUpdate()
 
         let eventCoord: Coord | undefined
 
@@ -97,8 +106,6 @@ export default function GameCanvas() {
         setIsDrawing(false)
 
         drawLine.finish(contextRef)
-
-        saveDrawingData()
 
         api.appendDrawToServer(VolatileData.get(), canvasSettings.get().lineColor)
 

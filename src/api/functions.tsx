@@ -1,7 +1,6 @@
 import apiSettings from "./settings"
 import axios from 'axios'
-import drawingData from "../data/drawingData"
-
+import { serverData } from "../data/serverData"
 
 const APIUrl = apiSettings.apiSettings.url
         
@@ -15,17 +14,25 @@ class Api{
             .then((response)=> response.data)
             .then(data => {
                 func(data)
+                serverData.update(data)
             })
+            .catch((error)=> console.error(error))
     }
 
     public checkUpdate() {
         const APIRoute = "/checkUpdate/"
-        const date = Date.now()
+        const date = serverData.lastDate()
 
         const url = APIUrl + APIRoute + date
+
         axios.get(url)
             .then((response)=> response.data)
-            .then((data)=> {})
+            .then((data)=>{
+                setTimeout(() => {
+                    this.checkUpdate()
+                }, 200);
+                serverData.appendData(data)
+            })
     }
 
     public appendDrawToServer(data: object, color: string) {

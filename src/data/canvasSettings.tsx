@@ -13,7 +13,8 @@ let canvasSettings: CanvasSettings = {
     "lineColor": "#ffffff",
     "lineWidth": 15,
     "backgroundColor": "#d4d4d4",
-    "context": undefined
+    "context": undefined,
+    "isDrawing": false
 }
 
 function setColor(color: string) {
@@ -34,8 +35,12 @@ function setContext(newContext: React.MutableRefObject<CanvasRenderingContext2D 
     canvasSettings.context = newContext
 }
 
+function setIsDrawing(value: boolean) {
+    canvasSettings.isDrawing = value
+}
+
 function get() {
     return canvasSettings
 }
 
-export default {get, setRealSize, setScale, setColor, setContext}
+export default {get, setRealSize, setScale, setColor, setContext ,setIsDrawing}

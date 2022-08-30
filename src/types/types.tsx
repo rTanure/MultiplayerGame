@@ -35,6 +35,7 @@ type CanvasSettings = {
     lineWidth: number,
     backgroundColor: string,
     context: React.MutableRefObject<CanvasRenderingContext2D | null> | undefined
+    isDrawing: boolean
 }
 
 export type {
